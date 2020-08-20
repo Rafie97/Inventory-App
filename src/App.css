@@ -1,0 +1,112 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 10s linear;
+  }
+}
+
+.App-header {
+  background-color: #283d6d;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.wrap-dash{
+  display:grid;
+  grid-template-areas: 
+  'header header header'
+  'menu main main'
+  'footer footer footer';
+  grid-gap:15px;
+  padding:15px;
+}
+
+.cards {
+  grid-column: 3 / span 12;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(auto, 60px));
+  grid-gap: 40px;
+  padding-bottom: 40px;
+  grid-area:main;
+}
+
+.card {
+  grid-column-end: span 3;
+  display: table;
+  padding-bottom:10px;
+  flex-direction: column;
+  background-color: var(--surface);
+  transition: all 0.3s ease 0s;
+  box-shadow: 0 4px 8px 0 rgba(57, 65, 70, 0.849);
+}
+
+.card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.2);
+}
+
+.form-control-file{
+  width:'10rem';
+  font-size:12px;
+}
+
+.navBar{
+  grid-area:header;
+  background-color:white;
+  font-weight: bold;
+}
+
+.menuNav{
+  grid-area:menu;
+  background-color:rgb(58, 152, 240);
+}
+
+
+footer {
+  grid-area: footer;
+  flex-direction:row;
+  align-items:center;
+  text-align: center;
+  background-color:transparent;
+  text-align:center;
+  padding-top:1rem;
+  color:white;
+  font-family:'Open Sans', sans-serif;
+}
+
+footer ul{flex-direction: row; list-style-type:none;}
+
+footer li {
+  text-decoration: none;
+  margin-right:1rem;
+  display:inline;
+}
+
+footer li a{
+  text-decoration:none;
+  color:white;
+}
+
+.foot-container{flex-direction:row;}
+.foot-menu{margin-bottom:1rem;}
+.icon-container{ margin-bottom:1rem; }
+.footer-icon{ margin-right:1rem;}
+
+
