@@ -104,10 +104,10 @@ class CustomCard extends Component {
                                 <Form.Control id="tempName" type="text" value={this.state.tempName} onChange={this.onFormChange} />
                                 <Form.Control id="tempPrice" type="text" value={this.state.tempPrice} onChange={this.onFormChange} />
                                 <div style={{ height: '1rem' }}></div>
-                                <label class="form-control-file" >Upload a photo of this item</label>
+                                <label className="form-control-file" >Upload a photo of this item</label>
                                 <Form.File ref={this.fileForm} class="form-control-file" onChange={() => this.setState({ uploading: true })} />
                                 <div style={{ height: '1rem' }}></div>
-                                <Button type="submit" onClick={this.submitEdit} variant="secondary">Save</Button>
+                                <Button type="button" onClick={this.submitEdit} variant="secondary">Save</Button>
                             </Form>) : (<></>)
                         }
                         <ToggleButton checked={this.state.edit} variant="primary" type="checkbox" onChange={this.toggleEdit}>{this.state.edit ? (<h>Undo</h>) : (<h>Edit</h>)}</ToggleButton>

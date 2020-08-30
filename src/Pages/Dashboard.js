@@ -10,9 +10,10 @@ export default class Dashboard extends Component {
         super(props);
         this.state = {
             cards: [],
+            backSearches:[],
         };
         this.handleItemChange = this.handleItemChange.bind(this);
-
+        this.searchItems = this.searchItems.bind(this);
     }
 
     componentDidMount() {
@@ -47,16 +48,17 @@ export default class Dashboard extends Component {
                     "imageLink": doc.data().imageLink,
                     "promo": doc.data().promo,
                 };
-                this.setState({ cards: [...this.state.cards, item] });
+                this.setState({ cards: [...this.state.cards, item], backSearches:[...this.state.backSearches, item] });
             });
-        })
+        });
+
     }
 
     async handleItemChange(newItem) {
         const items = this.state.cards;
 
         if (items.find(e => (e.docID === newItem.docID))) {
-            delete newItem.docID;
+            //delete newItem.docID;
             //Update in state
             const index = items.findIndex(e => (e.docID === newItem.docID));
             items[index] = newItem;
@@ -68,7 +70,7 @@ export default class Dashboard extends Component {
             await hebRef.doc(newItem.docID).set(newItem);
         }
         else if(newItem.docID==='additem' && newItem.name !=='Add a new item' && newItem.price !==''){
-            delete newItem.docID;
+            //delete newItem.docID;
             //Update in firebase
             const db = firebase.firestore();
             const hebRef = db.collection("stores").doc("HEB").collection("items");
@@ -82,6 +84,19 @@ export default class Dashboard extends Component {
         }
     }
 
+    async searchItems(val){
+
+        if(val ===''){
+            this.setState({backSearches:this.state.cards});
+        }
+        else if(val !== ''){
+            await this.setState({backSearches:[]});
+            const temp = this.state.cards.filter((i)=>{
+                return i.name.includes(val);
+            })
+            await this.setState({backSearches:temp});
+        }
+    }
 
 
 
@@ -97,20 +112,26 @@ export default class Dashboard extends Component {
             <div className="wrap-dash">
                 <div className="navBar">
                     <Navbar>
-                        <Navbar.Brand>Welcome to your inventory</Navbar.Brand>
+                        <Navbar.Brand style={{fontSize:30}}>Welcome to your inventory</Navbar.Brand>
                     </Navbar>
                 </div>
 
                 <div className="menuNav">
-                    <Nav >
-                        <Nav.Link style={{color:'white'}}>Inventory</Nav.Link>
-                        <Nav.Link style={{color:'white'}}>Store Data</Nav.Link>
-                    </Nav>
+                    <ul style = {{listStyle:'none'}}>
+                        <li style={{color:'white', marginBottom:20}}>Inventory</li>
+                        <li style={{color:'white', marginBottom:20}}>Store Data</li>
+                        <li style={{color:'white', marginBottom:20}}>Map</li>
+                    </ul>
+                </div>
+
+                <div className="searchBar">
+                    <input placeholder='Search' type='text' onChange={(val)=>this.searchItems(val.target.value)} />
                 </div>
 
                 <div className="cards">
-                    {(!this.state.cards.length) ? (<p>Loading</p>) : (this.state.cards.map((card) => (
-                        <CustomCard data={card} handleItemChange={this.handleItemChange} ></CustomCard>
+                    
+                    {(!this.state.cards.length) ? (<p>Loading</p>) : (this.state.backSearches.map((card) => (
+                        <CustomCard data={card} handleItemChange={this.handleItemChange}></CustomCard>
                     )))}
                     {(!this.state.cards.length) ? (<p>Loading</p>) : (<CustomCard data={emptyCard} handleItemChange={this.handleItemChange}></CustomCard>) }
                 </div>
