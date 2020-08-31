@@ -11,18 +11,17 @@ class CustomCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            item: {
-                name: props.data.name,
-                price: props.data.price,
-                imageLink: props.data.imageLink,
-                docID: props.data.docID,
-                promo: props.data.promo
-            },
+            item: props.data,
             edit: false,
             tempName: props.data.name,
             tempPrice: props.data.price,
             uploading: false
         }
+
+        const timeRef = new Date('August 30, 2020 00:00:00');
+        const diffRef = timeRef.getTime();
+        this.diffRef = diffRef; 
+
         //Refs
         this.fileForm = React.createRef();
 
@@ -47,7 +46,7 @@ class CustomCard extends Component {
 
     async submitEdit(event) {
 
-        console.log("submitted");
+        
         event.preventDefault();
         const { edit, tempName, tempPrice } = this.state;
 
@@ -59,7 +58,10 @@ class CustomCard extends Component {
 
         if (tempPrice !== this.state.item.price && tempPrice !== '') {
             const item = this.state.item;
+            const now = (Date.now()-this.diffRef).toString();
+            item.priceHistory[now] = this.state.item.price;
             item.price = tempPrice;
+            
             await this.setState({ item: item });
         }
 
@@ -78,7 +80,8 @@ class CustomCard extends Component {
             await this.setState({ item: item });
         }
 
-        this.props.handleItemChange(this.state.item);
+        const newItem = JSON.parse(JSON.stringify(this.state.item));
+        this.props.handleItemChange(newItem);
         await this.setState({ tempName: this.state.item.name, tempPrice: this.state.item.price, edit: !edit })
 
     }

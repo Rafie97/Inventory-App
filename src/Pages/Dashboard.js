@@ -3,6 +3,8 @@ import firebase from 'firebase';
 import CustomCard from '../Components/CustomCard';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Item from '../Models/Item';
+import Button from 'react-bootstrap/Button';
 
 export default class Dashboard extends Component {
 
@@ -14,23 +16,14 @@ export default class Dashboard extends Component {
         };
         this.handleItemChange = this.handleItemChange.bind(this);
         this.searchItems = this.searchItems.bind(this);
+
+        const timeRef = new Date('August 30, 2020 00:00:00');
+        const diffRef = timeRef.getTime();
+        this.diffRef = diffRef; 
     }
 
     componentDidMount() {
-        const config = {
-            apiKey: "AIzaSyAwVQUWQfP18Lmai0-897ftQ3AwFOGwF88",
-            authDomain: "bigproject-3043c.firebaseapp.com",
-            databaseURL: "https://bigproject-3043c.firebaseio.com",
-            projectId: "bigproject-3043c",
-            storageBucket: "bigproject-3043c.appspot.com",
-            messagingSenderId: "1070431489619",
-            appId: "1:1070431489619:web:ccf28d925d4e9db7a7c0a6",
-            measurementId: "G-STD67N7EY0"
-        };
-
-        if (!firebase.apps.length) {
-            firebase.initializeApp(config);
-        }
+        
         this.getItems();
     }
 
@@ -39,15 +32,9 @@ export default class Dashboard extends Component {
         const hebRef = db.collection("stores").doc("HEB").collection("items");
 
         await hebRef.onSnapshot((snap) => {
-            this.setState({ cards: [] });
+            this.setState({ cards: [], backSearches:[] });
             snap.forEach(doc => {
-                const item = {
-                    "docID": doc.id,
-                    "name": doc.data().name,
-                    "price": doc.data().price,
-                    "imageLink": doc.data().imageLink,
-                    "promo": doc.data().promo,
-                };
+                const item = new Item(doc.id, doc.data().name, doc.data().price, doc.data().imageLink, doc.data().barcode, doc.data().promo, doc.data().reviews , doc.data().priceHistory);
                 this.setState({ cards: [...this.state.cards, item], backSearches:[...this.state.backSearches, item] });
             });
         });
@@ -58,19 +45,23 @@ export default class Dashboard extends Component {
         const items = this.state.cards;
 
         if (items.find(e => (e.docID === newItem.docID))) {
-            //delete newItem.docID;
+
             //Update in state
             const index = items.findIndex(e => (e.docID === newItem.docID));
             items[index] = newItem;
-            await this.setState({ cards: items });
+            await this.setState({ cards: items , backSearches:items});
+            
 
             //Update in firebase
+            
             const db = firebase.firestore();
             const hebRef = db.collection("stores").doc("HEB").collection("items");
-            await hebRef.doc(newItem.docID).set(newItem);
+            await hebRef.doc(newItem.docID).update(newItem);
+
+            
         }
         else if(newItem.docID==='additem' && newItem.name !=='Add a new item' && newItem.price !==''){
-            //delete newItem.docID;
+            delete newItem.docID;
             //Update in firebase
             const db = firebase.firestore();
             const hebRef = db.collection("stores").doc("HEB").collection("items");
@@ -82,6 +73,8 @@ export default class Dashboard extends Component {
         else {
             console.log("Saved a new item without changing name or adding a price");
         }
+
+        //this.getItems();
     }
 
     async searchItems(val){

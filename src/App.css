@@ -54,7 +54,7 @@
 
 .card {
   grid-column-end: span 3;
-  display: table;
+  display: inline-block;
   padding-bottom:10px;
   flex-direction: column;
   background-color: var(--surface);
