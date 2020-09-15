@@ -29,6 +29,9 @@ class CustomCard extends Component {
         this.toggleEdit = this.toggleEdit.bind(this);
         this.submitEdit = this.submitEdit.bind(this);
         this.onFormChange = this.onFormChange.bind(this);
+        this.autoPriceChange = this.autoPriceChange.bind(this);
+
+        this.autoPriceChange();
     }
 
     toggleEdit() {
@@ -86,7 +89,30 @@ class CustomCard extends Component {
 
     }
 
+    autoPriceChange(){
+        //Sets a new price within 5% of the last price, intended to be run once per hour per item in order to establish a price history to plot
+        setInterval(async()=>{
+            
+            const item = this.state.item;
 
+            if(item.docID !== 'additem' ){ 
+                const numPrice = parseFloat( this.state.item.price);
+                const range = numPrice*.05
+                const newPrice = Math.floor(100*(numPrice + Math.random()*2*range-range))/100;
+
+                const now = (Date.now()-this.diffRef).toString();
+                item.priceHistory[now] = this.state.item.price;
+                item.price = newPrice;
+
+                await this.setState({ item: item });
+                const newItem = JSON.parse(JSON.stringify(item));
+                this.props.handleItemChange(newItem);
+                await this.setState({ tempName: this.state.item.name, tempPrice: this.state.item.price});
+            }
+
+        }, 1800000);
+        
+    }
 
     render() {
         return (

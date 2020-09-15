@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 export default class Dashboard extends Component {
 
     constructor(props) {
+
         super(props);
         this.state = {
             cards: [],
@@ -16,14 +17,10 @@ export default class Dashboard extends Component {
         };
         this.handleItemChange = this.handleItemChange.bind(this);
         this.searchItems = this.searchItems.bind(this);
-
-        const timeRef = new Date('August 30, 2020 00:00:00');
-        const diffRef = timeRef.getTime();
-        this.diffRef = diffRef; 
+        this.doThisOnce = this.doThisOnce.bind(this);
     }
 
     componentDidMount() {
-        
         this.getItems();
     }
 
@@ -34,7 +31,7 @@ export default class Dashboard extends Component {
         await hebRef.onSnapshot((snap) => {
             this.setState({ cards: [], backSearches:[] });
             snap.forEach(doc => {
-                const item = new Item(doc.id, doc.data().name, doc.data().price, doc.data().imageLink, doc.data().barcode, doc.data().promo, doc.data().reviews , doc.data().priceHistory);
+                const item = new Item(doc);
                 this.setState({ cards: [...this.state.cards, item], backSearches:[...this.state.backSearches, item] });
             });
         });
@@ -56,7 +53,7 @@ export default class Dashboard extends Component {
             
             const db = firebase.firestore();
             const hebRef = db.collection("stores").doc("HEB").collection("items");
-            await hebRef.doc(newItem.docID).update(newItem);
+            await hebRef.doc(newItem.docID).set(newItem);
 
             
         }
@@ -92,20 +89,69 @@ export default class Dashboard extends Component {
     }
 
 
+    doThisOnce(){
+        const db = firebase.firestore();
+        const hebRef = db.collection("stores").doc("HEB").collection("items");
+
+        
+        this.state.cards.forEach((e)=>{
+            /*
+            const priceHistoryArray = Object.entries(e.priceHistory);
+
+            const newHistoryArr = [];
+            priceHistoryArray.forEach((entry)=>{
+                if(typeof entry[1] ==="number"){
+                    newHistoryArr.push(entry);
+                }
+                else if(typeof entry[1] === "string"){
+                    const tempEntry = [entry[0], parseFloat(entry[1])]
+                    newHistoryArr.push(tempEntry);
+                }
+                else{ newHistoryArr.push('idk')}
+            })
+
+            */
+            const newAisle =  Math.floor(Math.random()*10)+1;
+            const newX = Math.floor(Math.random()*375);
+            const newY= Math.floor(Math.random()*300);
+
+            const newLocationObj = {
+                aisle: newAisle,
+                coordinates:{
+                    xPos:newX,
+                    yPos:newY
+                }
+            };
+
+            hebRef.doc(e.docID).update({
+                location: newLocationObj
+            }).catch(function(error) {
+                // The document probably doesn't exist.
+                console.log("Error updating document: ", error);
+            });
+            
+            
+            
+        });
+        
+        
+    }
+
 
     render() {
-        const emptyCard={
-            "docID": "additem",
-            "name": 'Add a new item',
-            "price": '',
-            "imageLink": '',
-            "promo": '',
+        const emptyDoc = {
+            docID:"additem",
+            name:"Add a new item",
         }
+
+        const emptyCard= new Item(emptyDoc);
+
         return (
             <div className="wrap-dash">
                 <div className="navBar">
                     <Navbar>
                         <Navbar.Brand style={{fontSize:30}}>Welcome to your inventory</Navbar.Brand>
+                        <Button onClick = {this.doThisOnce}> DO THIS ONCE </Button>
                     </Navbar>
                 </div>
 
