@@ -8,6 +8,7 @@ import firebase from 'firebase';
 import {AuthProvider} from './Components/Auth_Components/Auth';
 import PrivateRoute from './Components/Auth_Components/PrivateRoute';
 import config from './hiddenConfig/config';
+import StoreMap from './Pages/Dash Pages/StoreMap';
 
 class App extends Component {
 
