@@ -109,7 +109,7 @@ export default function StoreMap() {
     }
 
     return (
-        <div style={{flexDirection:"column"}}>
+        <div style={{flexDirection:"column", paddingTop:20}}>
             <svg ref={blueprintWindow} width="800px" height="500px"  onClick={CreateWall} onMouseMove={e => mouseMove(e)} >
                 <defs>
                     <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">

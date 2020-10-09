@@ -97,10 +97,9 @@ export default class InventoryPage extends Component {
 
         return (
             <div>
-                
-                
-                <div style={{marginBottom:40}}>
-                    <input placeholder='Search' type='text' onChange={(val)=>this.searchItems(val.target.value)} />
+
+                <div style={{marginBottom:40, marginTop:40, textAlign:'start'}}>
+                    <input placeholder='Search' type='text' onChange={(val)=>this.searchItems(val.target.value)} style={{paddingLeft:10}} />
                 </div>
 
                 <div className="cards">

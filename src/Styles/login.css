@@ -26,6 +26,10 @@
     src: url('./fonts/poppins/Poppins-SemiBold.ttf'); 
   }
   
+  @font-face {
+    font-family: Nunito-Bold;
+    src: url('./fonts/Nunito/Nunito-Regular.ttf'); 
+  }
   
   
   
