@@ -4,6 +4,7 @@ import Item from '../../Models/Item';
 import firebase from 'firebase';
 
 
+
 export default class InventoryPage extends Component {
 
     constructor(props) {

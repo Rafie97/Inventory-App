@@ -147,6 +147,8 @@
     border-radius: 10px;
     overflow: hidden;
     padding: 33px 55px 33px 55px;
+    align-self: center;
+    margin-top: 8rem;
   
     box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
     -moz-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
@@ -161,6 +163,7 @@
   
   .login100-form {
     width: 100%;
+    padding-top: 80;
   }
   
   .login100-form-title {

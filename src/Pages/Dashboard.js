@@ -66,14 +66,14 @@ export default class Dashboard extends Component {
         return (
             <div className="wrap-dash">
                 <div className="menuNav">
-                    <Dropdown title='Dashboards' />
+                    <MenuWithDropdown title='Dashboards' />
 
                     
                     <div className="foot-container" style={{marginLeft:10, marginBottom:10}}>
                         <div style ={{fontSize:16}}>
                             Numerus Delta Inventory Solutions
                         </div>
-                        <p style = {{fontSize:12}}>Privacy Policy | Copyright 2017</p>
+                        <p style = {{fontSize:12}}>Privacy Policy | Copyright 2020</p>
                     </div>
                
 
@@ -88,7 +88,7 @@ export default class Dashboard extends Component {
     }
 }
 
-function Dropdown({ title }) {
+function MenuWithDropdown({ title }) {
     const [open, setOpen] = useState(false);
 
 

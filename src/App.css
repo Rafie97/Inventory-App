@@ -25,6 +25,22 @@
   color: #61dafb;
 }
 
+.box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: #ccc;
+  border: 1px solid black;
+  text-align: center;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  overflow: hidden;
+  position: relative;
+  margin: 20px;
+}
+
 .wrap-dash{
   display:grid; 
   padding-left: 18rem;
