@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Resizable } from 're-resizable';
+import ReactDOM from 'react-dom';
 
 export default function StoreMap() {
 
@@ -23,6 +24,9 @@ export default function StoreMap() {
 
     const blueprintWindow = useRef(null);
 
+    const aisleForm = useRef(null);
+
+
     let drawRectLeft;
     let drawRectTop;
 
@@ -37,7 +41,7 @@ export default function StoreMap() {
 
         setPosition({ x: e.clientX - drawRectLeft, y: e.clientY - drawRectTop });
 
-        if (!firstClick && position.x && position.y ) {
+        if (!firstClick && position.x && position.y) {
 
             if (wallCoordinates) {
                 wallCoordinates.forEach(coord => {
@@ -70,6 +74,18 @@ export default function StoreMap() {
         }
     }
 
+    function createAisle() {
+        const aisleWidth = aisleForm.current.children.divAWidth.children.aisleWidthControl.value;
+        const aisleNum = aisleForm.current.children.divANum.children.aisleNumberControl.value;
+        const sections = aisleForm.current.children.divSections.children.numSectionsControl.value;
+        const shelves = aisleForm.current.children.divShelves.children.numShelvesControl.value;
+
+        const aisle = (<Aisle aisleNumber={aisleNum} width={aisleWidth} numSections={sections} numShelves={shelves} position={position} ></Aisle>);
+        console.log(aisle);
+        //blueprintWindow.current.appendChild(aisle);
+
+        ReactDOM.createPortal(aisle, blueprintWindow.current);
+    }
 
     function CreateWall() {
         if (firstClick && position.x && position.y) {
@@ -89,32 +105,32 @@ export default function StoreMap() {
             setFirstClick(false);
 
         }
-        else if(firstClick && (!position.x || !position.y)){
+        else if (firstClick && (!position.x || !position.y)) {
             mouseMove();
             setTempStart(position);
             setFirstClick(false);
         }
         else if (!firstClick && position.x && position.y) {
-            
+
             const newCoordinates = wallCoordinates;
             let end;
 
-            
-                wallCoordinates.forEach(coord => {
-                    if (position.x < coord.start.x + 10 && position.x > coord.start.x - 10) {
-                        end= { x: coord.start.x, y: position.y }
-                    }
-                    if (position.y < coord.start.y + 10 && position.y > coord.start.y - 10) {
-                        end= { x: position.x, y: coord.start.y } 
-                    }
-                    if (position.x < coord.end.x + 10 && position.x > coord.end.x - 10) {
-                        end= { x: coord.end.x, y: position.y } 
-                    }
-                    if (position.y < coord.end.y + 10 && position.y > coord.end.y - 10) {
-                        end= { x: position.x, y: coord.end.y }
-                    }
-                })
-            
+
+            wallCoordinates.forEach(coord => {
+                if (position.x < coord.start.x + 10 && position.x > coord.start.x - 10) {
+                    end = { x: coord.start.x, y: position.y }
+                }
+                if (position.y < coord.start.y + 10 && position.y > coord.start.y - 10) {
+                    end = { x: position.x, y: coord.start.y }
+                }
+                if (position.x < coord.end.x + 10 && position.x > coord.end.x - 10) {
+                    end = { x: coord.end.x, y: position.y }
+                }
+                if (position.y < coord.end.y + 10 && position.y > coord.end.y - 10) {
+                    end = { x: position.x, y: coord.end.y }
+                }
+            })
+
             if (tempStart.x > position.x - 10 && tempStart.x < position.x + 10 && !end) {
                 end = { x: tempStart.x, y: position.y };
             }
@@ -138,58 +154,75 @@ export default function StoreMap() {
     }
 
     return (
-        <div style={{ flexDirection: "column", paddingTop: 20 }}>
-            <Resizable className='box' 
-                minWidth="150"
-                minHeight="150"
-                maxWidth="1200"
-                maxHeight="1200"
-                defaultSize={{ width:350, height:350}}
-                onResizeStop={(e, direction, ref, d) => {
-                    setMapWidth(mapWidth + d.width);
-                    setMapHeight(mapHeight + d.height);
-                    console.log('Width: ', mapWidth, 'Height: ', mapHeight);
-                }} >
+        <div style={{ flexDirection: "column", paddingTop: 20, float: "left" }}>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <p style={{ width: 30, }}>{Math.round(mapHeight / 3)} ft</p>
 
-                <div className="poopoo" style={{display: 'flex', flexDirection:'row'}}>
-                    <p style={{width:50, alignSelf:'center'}}>{Math.round(mapHeight/3)} ft</p>
+                <Resizable className='box'
+                    style={{ outlineColor: 'black', outlineWidth: "5px", outlineStyle: "solid", boxSizing: 'content-box', borderWidth: 0, }}
+                    minWidth="150"
+                    minHeight="150"
+                    maxWidth="1200"
+                    maxHeight="1200"
 
-                    <svg  ref={blueprintWindow} width={mapWidth} height={mapHeight}  onClick={ isWallSelected ? (CreateWall):(CreateAisle)} onMouseMove={e => mouseMove(e)}  >
+                    defaultSize={{ width: 300, height: 300 }}
+                    onResizeStop={(e, direction, ref, d) => {
+                        setMapWidth(mapWidth + d.width);
+                        setMapHeight(mapHeight + d.height);
+                        console.log('Width: ', mapWidth, 'Height: ', mapHeight);
+                    }} >
 
-                        <line x1={0} y1={10} x2={mapWidth} y2={10} stroke="#283d6d" strokeWidth={5} strokeDasharray={[15, 5]}  />
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
 
-                        <line x1={10} y1={0} x2={10} y2={mapHeight} stroke="#283d6d" strokeWidth={5} strokeDasharray={[15, 5]} />
+                        <svg ref={blueprintWindow} width={mapWidth} height={mapHeight} onMouseMove={e => mouseMove(e)}  >
+                            <defs>
+                                <pattern id="smallGrid" width="6" height="6" patternUnits="userSpaceOnUse">
+                                    <path d="M 6 0 L 0 0 0 6" fill="none" stroke="black" stroke-width="0.75" />
+                                </pattern>
+                                <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse" >
+                                    <rect width="60" height="60" fill="url(#smallGrid)" />
+                                </pattern>
+                            </defs>
+                            <rect width={mapWidth} height={mapHeight} fill="url(#grid)" />
 
-                        <line x1={0} y1={mapHeight-10} x2={mapWidth} y2={mapHeight-10} stroke="#283d6d" strokeWidth={5} strokeDasharray={[15, 5]} />
+                            {wallCoordinates.map((coordinates, index) => {
+                                return (<Wall start={coordinates.start} end={coordinates.end} key={index} position={position} />)
+                            })}
+                            {tempWalls ? (<Wall start={tempWalls.start} end={tempWalls.end} position={position} />) : (<></>)}
+                        </svg>
+                    </div>
 
-                        <line x1={mapWidth-10} y1={0} x2={mapWidth-10} y2={mapHeight} stroke="#283d6d" strokeWidth={5} strokeDasharray={[15, 5]} />
+                </Resizable>
+            </div>
+
+            <p style={{ height: 50, alignSelf: 'center', marginLeft: 50 }}>{Math.round(mapWidth / 3)} ft</p>
 
 
-                        <defs>
-                            <pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">
-                                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#525252" stroke-width="0.75" />
-                            </pattern>
-                            <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse" x='12' y='12'>
-                                <rect width="100" height="100" fill="url(#smallGrid)" />
-                                <path d="M 100 0 L 0 0 0 100" fill="none" stroke="black" stroke-width="1" />
-                            </pattern>
-                        </defs>
-                        <rect width={mapWidth} height={mapHeight} fill="url(#grid)" />
 
-                        {wallCoordinates.map((coordinates, index) => {
-                            return (<Wall start={coordinates.start} end={coordinates.end} key={index} position={position} />)
-                        })}
-                        {tempWalls ? (<Wall start={tempWalls.start} end={tempWalls.end} position={position} />) : (<></>)}
-                    </svg>
+            <Form.Group ref={aisleForm}>
+                <Form.Label>Please choose some specifications for a new aisle.</Form.Label>
+                <div name = "divAWidth" style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", height: 50, margin: 20 }}>
+                    <Form.Label style={{ marginRight: 4 }}>Width: </Form.Label>
+                    <Form.Control name="aisleWidthControl" defaultValue="4" style={{ width: "4rem", position: "relative", bottom: 4, display: "inline", fontWeight: "bold", fontSize: 30, textAlign: "center", padding: 0, height: 40 }} ></Form.Control>
+                    <div style={{ display: "inline" }}>ft</div>
                 </div>
 
-                <p style={{height:50, alignSelf:'center', marginLeft:50}}>{Math.round(mapWidth/3)} ft</p>
+                <div name = "divANum" style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", height: 50, margin: 20 }}>
+                    <Form.Label style={{ marginRight: 4 }}>Aisle Number: </Form.Label>
+                    <Form.Control name="aisleNumberControl" style={{ width: "4rem", position: "relative", bottom: 4, display: "inline", fontWeight: "bold", fontSize: 30, textAlign: "center", padding: 0, height: 40 }} ></Form.Control>
+                </div>
 
-            </Resizable>
+                <div name = "divSections" style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", height: 50, margin: 20 }}>
+                    <Form.Label style={{ marginRight: 4 }}>Number of Sections: </Form.Label>
+                    <Form.Control name="numSectionsControl" defaultValue="Auto" style={{ width: "5rem", position: "relative", bottom: 4, display: "inline", fontWeight: "bold", fontSize: 30, textAlign: "center", padding: 0, height: 40 }} ></Form.Control>
+                </div>
 
-            <Form.Group type="radio">
-                <Form.Check type="radio" label="Wall" name="group1"></Form.Check>
-                <Form.Check type="radio" label="Aisle" name="group1"></Form.Check>
+                <div name="divShelves" style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", height: 50, margin: 20 }}>
+                    <Form.Label style={{ marginRight: 4 }}>Number of Shelves: </Form.Label>
+                    <Form.Control name="numShelvesControl" defaultValue="4" style={{ width: "4rem", position: "relative", bottom: 4, display: "inline", fontWeight: "bold", fontSize: 30, textAlign: "center", padding: 0, height: 40 }} ></Form.Control>
+                </div>
+                <Button onClick={createAisle}>OK</Button>
+
             </Form.Group>
 
             <Button style={{ marginRight: 20 }} onClick={ClearWalls} >Clear Walls</Button>
@@ -197,6 +230,45 @@ export default function StoreMap() {
 
         </div>
     );
+}
+
+class Aisle extends Component {
+
+    constructor(props) {
+        super(props)
+        this.aisle_number = props.aisleNumber;
+        this.num_sections = props.numSections;
+        this.num_shelves = props.numShelves;
+        this.position = props.position;
+        this.width = props.width;
+    }
+
+    render() {
+        return (
+            <g>
+                <line
+                    x1={this.position.start.x}
+                    y1={this.position.start.y}
+                    x2={this.position.end.x}
+                    y2={this.position.end.y}
+                    stroke="black"
+                    strokeWidth={this.width}
+                />
+
+                <line
+                    x1={this.position.start.x}
+                    y1={this.position.start.y}
+                    x2={this.position.end.x}
+                    y2={this.position.end.y}
+                    stroke="white"
+                    strokeWidth={this.width - 2}
+                    strokeDasharray={[5, 5]}
+                />
+            </g>
+        )
+    }
+
+
 }
 
 const Wall = ({ start, end, position }) => {
@@ -248,28 +320,7 @@ const Wall = ({ start, end, position }) => {
     )
 }
 
-const Aisle = ({ start, end }) => (
-    <g>
-        <line
-            x1={start.x}
-            y1={start.y}
-            x2={end.x}
-            y2={end.y}
-            stroke="black"
-            strokeWidth={6}
-        />
 
-        <line
-            x1={start.x}
-            y1={start.y}
-            x2={end.x}
-            y2={end.y}
-            stroke="white"
-            strokeWidth={2}
-            strokeDasharray={[5, 5]}
-        />
-    </g>
-)
 
 
 

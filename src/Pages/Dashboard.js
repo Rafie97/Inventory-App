@@ -66,16 +66,15 @@ export default class Dashboard extends Component {
         return (
             <div className="wrap-dash">
                 <div className="menuNav">
+
                     <MenuWithDropdown title='Dashboards' />
 
-                    
                     <div className="foot-container" style={{marginLeft:10, marginBottom:10}}>
                         <div style ={{fontSize:16}}>
                             Numerus Delta Inventory Solutions
                         </div>
                         <p style = {{fontSize:12}}>Privacy Policy | Copyright 2020</p>
                     </div>
-               
 
                 </div>
 

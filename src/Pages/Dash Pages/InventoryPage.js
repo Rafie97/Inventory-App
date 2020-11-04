@@ -97,8 +97,7 @@ export default class InventoryPage extends Component {
         const emptyCard= new Item(emptyDoc);
 
         return (
-            <div>
-
+            <div style={{float:"left"}}>
                 <div style={{marginBottom:40, marginTop:40, textAlign:'start'}}>
                     <input placeholder='Search' type='text' onChange={(val)=>this.searchItems(val.target.value)} style={{paddingLeft:10}} />
                 </div>
