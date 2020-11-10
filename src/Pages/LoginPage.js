@@ -22,6 +22,7 @@ export default class LoginPage extends Component {
 		this.signUpFirebase=this.signUpFirebase.bind(this);
 		this.onFormChange=this.onFormChange.bind(this);
 		this.logUser = this.logUser.bind(this);
+		this.emailSpan = React.createRef();
 	}
 
 	
@@ -67,7 +68,12 @@ export default class LoginPage extends Component {
         const name = event.target.id;
 		this.setState({ [name]: value });
 		if(value){
-			this.setState({inputHasVal:true});
+			this.refs.emailSpan.style.display = "none";
+			this.refs.passSpan.style.display = "none";
+		}
+		if(!value){
+			this.refs.emailSpan.style.display = "inline";
+			this.refs.passSpan.style.display = "inline";
 		}
     }
 
@@ -80,12 +86,12 @@ export default class LoginPage extends Component {
 
 					<div class="wrap-input100">
 						<input class="input100" type="text" id="tempEmail" onChange={this.onFormChange} />
-						<span class="focus-input100" data-placeholder="Email"></span>
+						<span ref="emailSpan" class="focus-input100" data-placeholder="Email"></span>
 					</div>
 
 					<div class="wrap-input100" >
 						<input class="input100" type="password" id="tempPass" onChange={this.onFormChange}/>
-						<span class="focus-input100" data-placeholder="Password"></span>
+						<span ref="passSpan" class="focus-input100" data-placeholder="Password"></span>
 					</div>
 
 					<div class="container-login100-form-btn">

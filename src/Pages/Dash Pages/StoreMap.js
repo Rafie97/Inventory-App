@@ -80,11 +80,11 @@ export default function StoreMap() {
         const sections = aisleForm.current.children.divSections.children.numSectionsControl.value;
         const shelves = aisleForm.current.children.divShelves.children.numShelvesControl.value;
 
-        const aisle = (<Aisle aisleNumber={aisleNum} width={aisleWidth} numSections={sections} numShelves={shelves} position={position} ></Aisle>);
+        const aisle = (<Aisle aisleNumber={aisleNum} width={aisleWidth} numSections={sections} numShelves={shelves} position={{start:{x:50, y:50}, end:{x:150, y:150}}} ></Aisle>);
         console.log(aisle);
         //blueprintWindow.current.appendChild(aisle);
 
-        ReactDOM.createPortal(aisle, blueprintWindow.current);
+        ReactDOM.createPortal(<Aisle aisleNumber={aisleNum} width={aisleWidth} numSections={sections} numShelves={shelves} position={{start:{x:50, y:50}, end:{x:150, y:150}}} />, blueprintWindow.current);
     }
 
     function CreateWall() {

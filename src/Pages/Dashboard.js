@@ -5,7 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import InventoryPage from './Dash Pages/InventoryPage';
 import StoreMap from './Dash Pages/StoreMap';
 import Button from 'react-bootstrap/Button';
-import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Switch, Redirect } from 'react-router-dom';
 import { ToggleButton } from 'react-bootstrap';
 
 export default class Dashboard extends Component {
@@ -79,6 +79,7 @@ export default class Dashboard extends Component {
                 </div>
 
                 <Switch>
+                    <Redirect exact from="/Dashboard" to="/Dashboard/Inventory" />
                     <Route path="/Dashboard/Inventory" exact component={InventoryPage} />
                     <Route path="/Dashboard/Map" exact component={StoreMap} />
                 </Switch>
