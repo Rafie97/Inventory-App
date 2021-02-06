@@ -1,17 +1,15 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Dashboard from './Pages/Dashboard';
-import LoginPage from './Pages/LoginPage';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import firebase from 'firebase';
-import { AuthProvider } from './Components/Auth_Components/Auth';
-import PrivateRoute from './Components/Auth_Components/PrivateRoute';
-import config from './hiddenConfig/config';
-import StoreMap from './Pages/Dash Pages/StoreMap';
+import React, { Component } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import Dashboard from "./Pages/Dashboard";
+import LoginPage from "./Pages/LoginPage";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import firebase from "firebase";
+import { AuthProvider } from "./Components/Auth_Components/Auth";
+import PrivateRoute from "./Components/Auth_Components/PrivateRoute";
+import config from "./hiddenConfig/config";
 
 class App extends Component {
-
   componentDidMount() {
     if (!firebase.apps.length) {
       firebase.initializeApp(config);

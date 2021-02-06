@@ -1,9 +1,8 @@
 .App {
   text-align: center;
-  
+
   font-family: Nunito-Bold;
 }
-
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -25,10 +24,11 @@
   color: #61dafb;
 }
 
-.box {
+.grid-map {
   display: flex;
   justify-content: center;
   align-items: center;
+  align-self: center;
   flex-direction: column;
   background: #ccc;
   border: 1px solid black;
@@ -41,8 +41,23 @@
   margin: 20px;
 }
 
+.blurDiv {
+  display: inline-block;
+  height: 200px;
+  width: 300px;
+  border-radius: 3em;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(40px);
+  z-index: 1;
+}
 
-
+.map-par {
+  color: white;
+  font-size: 17px;
+  align-self: center;
+  text-align: center;
+  position: sticky;
+}
 
 .cards {
   grid-column: 3 / span 12;
@@ -50,15 +65,14 @@
   max-width: 100%;
   grid-template-columns: repeat(12, minmax(auto, 60px));
   grid-gap: 40px;
-  left:0;
+  left: 0;
   padding-bottom: 40px;
-  
 }
 
 .card {
   grid-column-end: span 3;
   display: inline-block;
-  padding-bottom:10px;
+  padding-bottom: 10px;
   flex-direction: column;
   background-color: var(--surface);
   transition: all 0.3s ease 0s;
@@ -70,73 +84,63 @@
   box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.2);
 }
 
-.form-control-file{
-  width:'10rem';
-  font-size:12px;
+.form-control-file {
+  width: "10rem";
+  font-size: 12px;
 }
 
-.navBar{
-
+.navBar {
   font-weight: bold;
-  height:5rem;
+  height: 5rem;
 }
 
-.menuNav{
- 
-  list-style:none;
-  font-size:40;
-  height:100%;
-  width:17rem;
+.menuNav {
+  list-style: none;
+  font-size: 40;
+  height: 100%;
+  width: 17rem;
   background-color: #313a46;
-  position:fixed;
-  top:0;
+  position: fixed;
+  top: 0;
   left: 0;
 }
 
-
-.foot-container{
-  flex-direction:row;
-  background-color:transparent;
-  text-align:center;
-  color:white;
+.foot-container {
+  flex-direction: row;
+  background-color: transparent;
+  text-align: center;
+  color: white;
   position: fixed;
-  bottom:0; 
+  bottom: 0;
 }
 
-
-
-@media screen and (max-width:2600px){
+@media screen and (max-width: 2600px) {
   .cards {
     grid-gap: 100px;
-    
   }
 
-  .wrap-dash{
-    padding-left:31rem
+  .wrap-dash {
+    padding-left: 31rem;
   }
 }
 
-
-
-@media screen and (max-width:2000px){
+@media screen and (max-width: 2000px) {
   .cards {
     grid-gap: 10px;
   }
-  .wrap-dash{
-    padding-left:17rem
+  .wrap-dash {
+    padding-left: 17rem;
   }
 }
 
-
-@media screen and (max-width:1000px){
-
+@media screen and (max-width: 1000px) {
   .card {
     grid-column-end: span 1;
   }
   .cards {
     grid-gap: 10px;
   }
-  .wrap-dash{
-    padding-left:17rem
+  .wrap-dash {
+    padding-left: 17rem;
   }
 }
