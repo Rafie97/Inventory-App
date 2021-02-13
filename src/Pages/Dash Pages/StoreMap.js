@@ -4,6 +4,8 @@ import Button from "react-bootstrap/Button";
 import { Resizable } from "re-resizable";
 import Switch from "react-switch";
 import firebase from "firebase";
+import Bubble from "react-bubble";
+import AisleForm from "../../Components/AisleForm";
 
 export default function StoreMap() {
   const [firstClick, setFirstClick] = useState(true);
@@ -21,6 +23,7 @@ export default function StoreMap() {
   const [aisles, setAisles] = useState([]);
 
   const [swich, setSwich] = useState(false);
+  const [takenPos, setTakenPos] = useState({ x: 0, y: 0 });
 
   const blueprintWindow = useRef(undefined);
 
@@ -44,6 +47,7 @@ export default function StoreMap() {
     hebRef.set({
       coordinates: wallCoordinates,
       aisles: aisles,
+      mapSize: { height: mapHeight, width: mapWidth },
     });
   }
 
@@ -106,7 +110,19 @@ export default function StoreMap() {
 
   function createAisle() {
     if (cursorPos.x && cursorPos.y) {
-      setAisles([...aisles, cursorPos]);
+      let takenAisle = false;
+      aisles.forEach((ai) => {
+        if (cursorPos.x === ai.x && cursorPos.y === ai.y) {
+          takenAisle = true;
+        }
+      });
+      if (!takenAisle) {
+        setTakenPos({ x: 0, y: 0 });
+        setAisles([...aisles, cursorPos]);
+      } else {
+        console.log("click aisle happened");
+        setTakenPos({ x: cursorPos.x, y: cursorPos.y });
+      }
     }
   }
 
@@ -201,18 +217,16 @@ export default function StoreMap() {
               {aisles ? (
                 aisles.map((coordinate, index) => {
                   return (
-                    <>
-                      <g>
-                        <circle
-                          cx={coordinate.x}
-                          cy={coordinate.y}
-                          r={3}
-                          stroke="black"
-                          strokeWidth={1}
-                          fill="yellow"
-                        ></circle>
-                      </g>
-                    </>
+                    <g key={index}>
+                      <circle
+                        cx={coordinate.x}
+                        cy={coordinate.y}
+                        r={3}
+                        stroke="black"
+                        strokeWidth={1}
+                        fill="yellow"
+                      ></circle>
+                    </g>
                   );
                 })
               ) : (
@@ -238,7 +252,13 @@ export default function StoreMap() {
           </div>
         </Resizable>
       </div>
-
+      <div
+        style={{
+          position: "relative",
+          right: cursorPos.x,
+          top: cursorPos.y,
+        }}
+      ></div>
       <p
         className="map-par"
         style={{
@@ -282,6 +302,8 @@ export default function StoreMap() {
       ) : (
         <></>
       )}
+
+      {takenPos.x !== 0 && takenPos.y !== 0 ? <AisleForm></AisleForm> : <></>}
     </div>
   );
 }

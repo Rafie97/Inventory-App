@@ -13,6 +13,7 @@
     "re-resizable": "^6.6.1",
     "react": "^17.0.0-rc.0",
     "react-bootstrap": "^1.3.0",
+    "react-bubble": "^1.0.5",
     "react-dom": "^17.0.0-rc.0",
     "react-icons": "^4.1.0",
     "react-planner": "^2.0.6",
