@@ -24,10 +24,13 @@ export default function StoreMap() {
 
   const [swich, setSwich] = useState(false);
   const [takenPos, setTakenPos] = useState({ x: 0, y: 0 });
+  const [takenIndex, setTakenIndex] = useState(-1);
 
   const blueprintWindow = useRef(undefined);
 
   const [addingLocations, setAddingLocations] = useState(false);
+
+  const db = firebase.firestore();
 
   let drawRectLeft;
   let drawRectTop;
@@ -37,16 +40,38 @@ export default function StoreMap() {
     drawRectTop = blueprintWindow.current.getBoundingClientRect().top;
   });
 
+  useEffect(() => {
+    const hebRef = db
+      .collection("stores")
+      .doc("HEB")
+      .collection("map-data")
+      .doc("walls");
+    hebRef.get().then((doc) => {
+      if (doc.exists) {
+        if (doc.data().wallCoordinates) {
+          setWallCoordinates(doc.data().wallCoordinates);
+        }
+        if (doc.data().mapSize.width && doc.data().mapSize.height) {
+          setMapWidth(doc.data().mapSize.width);
+          setMapHeight(doc.data().mapSize.height);
+        }
+        if (doc.data().aisles[0]) {
+          setAisles(doc.data().aisles);
+        }
+      }
+    });
+  }, []);
+
   function onSave() {
-    const db = firebase.firestore();
     const hebRef = db
       .collection("stores")
       .doc("HEB")
       .collection("map-data")
       .doc("walls");
     hebRef.set({
-      coordinates: wallCoordinates,
+      wallCoordinates: wallCoordinates,
       aisles: aisles,
+
       mapSize: { height: mapHeight, width: mapWidth },
     });
   }
@@ -110,18 +135,24 @@ export default function StoreMap() {
 
   function createAisle() {
     if (cursorPos.x && cursorPos.y) {
-      let takenAisle = false;
-      aisles.forEach((ai) => {
-        if (cursorPos.x === ai.x && cursorPos.y === ai.y) {
-          takenAisle = true;
+      let takenIndex = -1;
+      aisles.forEach((ai, index) => {
+        //turn into findIndex()
+        if (
+          cursorPos.x === ai.coordinate.x &&
+          cursorPos.y === ai.coordinate.y
+        ) {
+          takenIndex = index;
         }
       });
-      if (!takenAisle) {
+      if (takenIndex === -1) {
         setTakenPos({ x: 0, y: 0 });
-        setAisles([...aisles, cursorPos]);
+        setTakenIndex(-1);
+        setAisles([...aisles, { coordinate: cursorPos }]);
       } else {
         console.log("click aisle happened");
         setTakenPos({ x: cursorPos.x, y: cursorPos.y });
+        setTakenIndex(takenIndex);
       }
     }
   }
@@ -172,7 +203,7 @@ export default function StoreMap() {
           minHeight="150"
           maxWidth="1200"
           maxHeight="1200"
-          defaultSize={{ width: 300, height: 300 }}
+          defaultSize={{ width: mapWidth, height: mapHeight }}
           onResizeStop={(e, direction, ref, d) => {
             setMapWidth(mapWidth + d.width);
             setMapHeight(mapHeight + d.height);
@@ -215,12 +246,12 @@ export default function StoreMap() {
               <rect width={mapWidth} height={mapHeight} fill="url(#grid)" />
 
               {aisles ? (
-                aisles.map((coordinate, index) => {
+                aisles.map((ai, index) => {
                   return (
                     <g key={index}>
                       <circle
-                        cx={coordinate.x}
-                        cy={coordinate.y}
+                        cx={ai.coordinate.x}
+                        cy={ai.coordinate.y}
                         r={3}
                         stroke="black"
                         strokeWidth={1}
@@ -303,7 +334,11 @@ export default function StoreMap() {
         <></>
       )}
 
-      {takenPos.x !== 0 && takenPos.y !== 0 ? <AisleForm></AisleForm> : <></>}
+      {takenPos.x !== 0 && takenPos.y !== 0 ? (
+        <AisleForm index={takenIndex} aisles={aisles}></AisleForm>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
