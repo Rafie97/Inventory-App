@@ -6,6 +6,7 @@ import Switch from "react-switch";
 import firebase from "firebase";
 import Bubble from "react-bubble";
 import AisleForm from "../../Components/AisleForm";
+import { mainReducer } from "../../reducers/mainReducer";
 
 export default function StoreMap() {
   const [firstClick, setFirstClick] = useState(true);
@@ -16,7 +17,7 @@ export default function StoreMap() {
   const [tempStart, setTempStart] = useState(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-
+  p;
   const [mapWidth, setMapWidth] = useState(300);
   const [mapHeight, setMapHeight] = useState(300);
 

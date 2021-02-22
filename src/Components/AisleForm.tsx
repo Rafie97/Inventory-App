@@ -4,6 +4,9 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import CustomCard from "./CustomCard";
 import firebase from "firebase";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { Modal } from "react-bootstrap";
+import { mainReducer } from "../reducers/mainReducer";
 
 type formProps = {
   index: number;
@@ -15,6 +18,22 @@ export default function AisleForm({ index, aisles }: formProps) {
   const [aisle, setAisle] = React.useState(0);
   const [section, setSection] = React.useState(0);
   const [shelves, setShelves] = React.useState(4);
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [details, dispatch] = React.useReducer(mainReducer, {});
+
+  React.useEffect(() => {
+    console.log("PRODUCTS: ", details.products);
+  }, [details]);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function afterOpenModal() {}
+
+  function closeModal() {
+    setIsOpen(false);
+  }
 
   const toggle = () => {
     setOpen(!open);
@@ -143,9 +162,32 @@ export default function AisleForm({ index, aisles }: formProps) {
           margin: 20,
         }}
       >
-        <div tabIndex={0} role="button" onKeyPress={toggle} onClick={toggle}>
-          <div>List of Products</div>
+        <div style={{ flexDirection: "row" }}>
+          <div
+            style={{ display: "inline-block", marginRight: 20 }}
+            tabIndex={0}
+            role="button"
+            onKeyPress={toggle}
+            onClick={toggle}
+          >
+            <div>List of Products</div>
+          </div>
+          <div
+            onClick={() => openModal()}
+            role="button"
+            style={{ display: "inline-block", marginRight: 20 }}
+          >
+            Open modal
+          </div>
         </div>
+
+        <Modal show={modalIsOpen} onHide={closeModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Choose Products to Add</Modal.Title>
+          </Modal.Header>
+          <Modal.Body></Modal.Body>
+        </Modal>
+
         {open && (
           <ul style={{ listStyle: "none" }}>
             <li>Product 1</li>
