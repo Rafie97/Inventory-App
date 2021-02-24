@@ -17,7 +17,6 @@ export default function StoreMap() {
   const [tempStart, setTempStart] = useState(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-  p;
   const [mapWidth, setMapWidth] = useState(300);
   const [mapHeight, setMapHeight] = useState(300);
 

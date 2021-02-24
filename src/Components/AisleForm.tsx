@@ -6,7 +6,9 @@ import CustomCard from "./CustomCard";
 import firebase from "firebase";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { Modal } from "react-bootstrap";
-import { mainReducer } from "../reducers/mainReducer";
+import { productsSelector } from "reducers/selectors/selectors";
+import { useSelector } from "react-redux";
+import Image from "react-bootstrap/Image";
 
 type formProps = {
   index: number;
@@ -19,11 +21,13 @@ export default function AisleForm({ index, aisles }: formProps) {
   const [section, setSection] = React.useState(0);
   const [shelves, setShelves] = React.useState(4);
   const [modalIsOpen, setIsOpen] = React.useState(false);
-  const [details, dispatch] = React.useReducer(mainReducer, {});
+  const products = useSelector(productsSelector);
 
   React.useEffect(() => {
-    console.log("PRODUCTS: ", details.products);
-  }, [details]);
+    if (products) {
+      console.log("PRODUCTS: ", products);
+    }
+  }, [products]);
 
   function openModal() {
     setIsOpen(true);
@@ -185,7 +189,15 @@ export default function AisleForm({ index, aisles }: formProps) {
           <Modal.Header closeButton>
             <Modal.Title>Choose Products to Add</Modal.Title>
           </Modal.Header>
-          <Modal.Body></Modal.Body>
+          <Modal.Body>
+            {products.map((p) => {
+              return (
+                <div style={{ flexDirection: "column" }}>
+                  <Image src={p.imageLink} rounded={true} />
+                </div>
+              );
+            })}
+          </Modal.Body>
         </Modal>
 
         {open && (

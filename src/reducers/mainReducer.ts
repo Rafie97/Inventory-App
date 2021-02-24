@@ -1,13 +1,18 @@
-const SET_PRODUCTS = "SET_PRODUCTS";
+import { SET_PRODUCTS } from "./actions/actionTypes";
+import Item from "../Models/Item";
 
-const initialState = {
+export type stateType = {
+  products: Item[];
+};
+
+const initialState: stateType = {
   products: [],
 };
 
 export const mainReducer = (state = initialState, action: any) => {
   switch (action.type) {
     case SET_PRODUCTS:
-      return { ...state, ...action.payload };
+      return { ...state, products: action.payload };
     default:
       return state;
   }

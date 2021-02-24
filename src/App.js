@@ -8,6 +8,7 @@ import firebase from "firebase";
 import { AuthProvider } from "./Components/Auth_Components/Auth";
 import PrivateRoute from "./Components/Auth_Components/PrivateRoute";
 import config from "./hiddenConfig/config";
+import * as store from "./reducers/store";
 
 class App extends Component {
   componentDidMount() {
@@ -20,7 +21,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <AuthProvider>
+          <AuthProvider store={store.default.store}>
             <Router>
               <Route path="/" exact component={LoginPage} />
               <PrivateRoute path="/Dashboard" component={Dashboard} />
