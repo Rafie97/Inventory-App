@@ -3,31 +3,41 @@ import { MdDashboard } from "react-icons/md";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import CustomCard from "./CustomCard";
-import firebase from "firebase";
+import firebase, { firestore } from "firebase";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { Modal } from "react-bootstrap";
 import { productsSelector } from "reducers/selectors/selectors";
 import { useSelector } from "react-redux";
 import Image from "react-bootstrap/Image";
+import Item from "../Models/Item";
+import ProductListItem from "../Components/ProductListItem";
+import { Aisle } from "../Models/Aisle";
 
 type formProps = {
   index: number;
-  aisles: any;
+  aisles: Aisle[];
+  changeAisleProduct: (index: number, item: Item, add: boolean) => void;
 };
 
-export default function AisleForm({ index, aisles }: formProps) {
+export default function AisleForm({
+  index,
+  aisles,
+  changeAisleProduct,
+}: formProps) {
   const [open, setOpen] = React.useState(false);
   const [aisle, setAisle] = React.useState(0);
   const [section, setSection] = React.useState(0);
   const [shelves, setShelves] = React.useState(4);
   const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [selectedProducts, setSelectedProducts] = React.useState<Item[]>([]);
   const products = useSelector(productsSelector);
 
-  React.useEffect(() => {
-    if (products) {
-      console.log("PRODUCTS: ", products);
-    }
-  }, [products]);
+  const db = firebase.firestore();
+  const hebRef = db
+    .collection("stores")
+    .doc("HEB")
+    .collection("map-data")
+    .doc("walls");
 
   function openModal() {
     setIsOpen(true);
@@ -43,25 +53,18 @@ export default function AisleForm({ index, aisles }: formProps) {
     setOpen(!open);
   };
 
-  function onSave() {
-    const db = firebase.firestore();
-    const hebRef = db
-      .collection("stores")
-      .doc("HEB")
-      .collection("map-data")
-      .doc("walls");
-
-    const ais = aisles;
-    ais[index] = {
-      ...ais[index],
-      aisle: aisle,
-      section: section,
-      shelves: shelves,
-    };
-    hebRef.update({
-      aisles: ais,
-    });
-  }
+  // function onSave() {
+  //   const ais = aisles;
+  //   ais[index] = {
+  //     ...ais[index],
+  //     aisle,
+  //     section,
+  //     shelves,
+  //   };
+  //   hebRef.update({
+  //     aisles: ais,
+  //   });
+  // }
 
   function setForm(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.name === "aisleNumberControl") {
@@ -190,27 +193,22 @@ export default function AisleForm({ index, aisles }: formProps) {
             <Modal.Title>Choose Products to Add</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {products.map((p) => {
+            {products.map((p: Item) => {
               return (
-                <div style={{ flexDirection: "column" }}>
-                  <Image src={p.imageLink} rounded={true} />
-                </div>
+                <ProductListItem
+                  index={index}
+                  p={p}
+                  changeAisleProducts={changeAisleProduct}
+                ></ProductListItem>
               );
             })}
           </Modal.Body>
         </Modal>
-
-        {open && (
-          <ul style={{ listStyle: "none" }}>
-            <li>Product 1</li>
-            <li>Product 2</li>
-          </ul>
-        )}
       </div>
       <div style={{ flexDirection: "row" }}>
-        <Button style={{ marginRight: 10 }} onClick={onSave}>
+        {/* <Button style={{ marginRight: 10 }} onClick={onSave}>
           Save
-        </Button>
+        </Button> */}
         <Button style={{ marginRight: 10 }}>Delete</Button>
       </div>
     </Form.Group>

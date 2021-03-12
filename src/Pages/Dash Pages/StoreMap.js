@@ -35,17 +35,18 @@ export default function StoreMap() {
   let drawRectLeft;
   let drawRectTop;
 
+  const hebRef = db
+    .collection("stores")
+    .doc("HEB")
+    .collection("map-data")
+    .doc("walls");
+
   useEffect(() => {
     drawRectLeft = blueprintWindow.current.getBoundingClientRect().left;
     drawRectTop = blueprintWindow.current.getBoundingClientRect().top;
   });
 
   useEffect(() => {
-    const hebRef = db
-      .collection("stores")
-      .doc("HEB")
-      .collection("map-data")
-      .doc("walls");
     hebRef.get().then((doc) => {
       if (doc.exists) {
         if (doc.data().wallCoordinates) {
@@ -63,17 +64,43 @@ export default function StoreMap() {
   }, []);
 
   function onSave() {
-    const hebRef = db
-      .collection("stores")
-      .doc("HEB")
-      .collection("map-data")
-      .doc("walls");
-    hebRef.set({
-      wallCoordinates: wallCoordinates,
-      aisles: aisles,
-
+    const wallData = {
+      wallCoordinates,
+      aisles,
       mapSize: { height: mapHeight, width: mapWidth },
-    });
+    };
+    hebRef.set(wallData);
+  }
+
+  function changeAisleProduct(index, item, add) {
+    if (aisles.length > 0) {
+      let newAisles = aisles;
+      let newPros = aisles[index].products || [];
+      console.log("old  pros: ", newPros);
+      if (add) {
+        newPros.push(item.docID);
+      } else {
+        newPros = newPros.map((p) => {
+          if (p.docID !== item.docID) {
+            return p.docID;
+          }
+        });
+      }
+
+      const newAisle = {
+        coordinate: aisles[index].coordinate,
+        products: newPros,
+      };
+      newAisles[index] = newAisle;
+
+      setAisles(newAisles);
+      console.log("new aisles: ", newAisles);
+      console.log("new pros: ", newPros);
+
+      hebRef.update({
+        aisles,
+      });
+    }
   }
 
   function mouseMove(e) {
@@ -148,7 +175,7 @@ export default function StoreMap() {
       if (takenIndex === -1) {
         setTakenPos({ x: 0, y: 0 });
         setTakenIndex(-1);
-        setAisles([...aisles, { coordinate: cursorPos }]);
+        setAisles([...aisles, { coordinate: cursorPos, products: [] }]);
       } else {
         console.log("click aisle happened");
         setTakenPos({ x: cursorPos.x, y: cursorPos.y });
@@ -163,6 +190,7 @@ export default function StoreMap() {
 
   function ClearWalls() {
     setWallCoordinates([]);
+    setAisles([]);
   }
 
   return (
@@ -321,7 +349,7 @@ export default function StoreMap() {
         />
         {swich ? <h3 style={{ flex: 1 }}>Aisle</h3> : <></>}
       </div>
-      {swich ? (
+      {/*swich ? (
         <Button
           style={{ flex: 1 }}
           onClick={() => setAddingLocations(!addingLocations)}
@@ -332,10 +360,14 @@ export default function StoreMap() {
         </Button>
       ) : (
         <></>
-      )}
+      )*/}
 
       {takenPos.x !== 0 && takenPos.y !== 0 ? (
-        <AisleForm index={takenIndex} aisles={aisles}></AisleForm>
+        <AisleForm
+          index={takenIndex}
+          aisles={aisles}
+          changeAisleProduct={changeAisleProduct}
+        ></AisleForm>
       ) : (
         <></>
       )}

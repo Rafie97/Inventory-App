@@ -4,6 +4,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import InventoryPage from "./Dash Pages/InventoryPage";
 import StoreMap from "./Dash Pages/StoreMap";
+import Item from "../Models/Item";
 import Button from "react-bootstrap/Button";
 import {
   BrowserRouter as Router,
@@ -16,14 +17,32 @@ import { ToggleButton } from "react-bootstrap";
 import { BiCurrentLocation } from "react-icons/bi";
 import { MdDashboard } from "react-icons/md";
 import { BsClipboardData } from "react-icons/bs";
+import { setProducts } from "reducers/actions/appState";
+import { useDispatch, useSelector } from "react-redux";
+import { productsSelector } from "reducers/selectors/selectors";
 
-export default class Dashboard extends Component {
-  constructor(props) {
-    super(props);
-    this.doThisOnce = this.doThisOnce.bind(this);
+export default function Dashboard() {
+  const dispatch = useDispatch();
+  const products = useSelector(productsSelector);
+
+  React.useEffect(() => {
+    getItems();
+  }, []);
+
+  async function getItems() {
+    const db = firebase.firestore();
+    const hebRef = db.collection("stores").doc("HEB").collection("items");
+    let cardo = [];
+    await hebRef.onSnapshot(async (snap) => {
+      snap.forEach((doc) => {
+        const item = new Item(doc);
+        cardo.push(item);
+      });
+      dispatch(setProducts(cardo));
+    });
   }
 
-  doThisOnce() {
+  function doThisOnce() {
     const db = firebase.firestore();
     const hebRef = db.collection("stores").doc("HEB").collection("items");
 
@@ -68,31 +87,27 @@ export default class Dashboard extends Component {
     });
   }
 
-  render() {
-    return (
-      <div className="wrap-dash">
-        <div className="menuNav">
-          <MenuWithDropdown title="Dashboards" />
+  return (
+    <div className="wrap-dash">
+      <div className="menuNav">
+        <MenuWithDropdown title="Dashboards" />
 
-          <div
-            className="foot-container"
-            style={{ marginLeft: 10, marginBottom: 10 }}
-          >
-            <div style={{ fontSize: 16 }}>
-              Numerus Delta Inventory Solutions
-            </div>
-            <p style={{ fontSize: 12 }}>Privacy Policy | Copyright 2020</p>
-          </div>
+        <div
+          className="foot-container"
+          style={{ marginLeft: 10, marginBottom: 10 }}
+        >
+          <div style={{ fontSize: 16 }}>Numerus Delta Inventory Solutions</div>
+          <p style={{ fontSize: 12 }}>Privacy Policy | Copyright 2020</p>
         </div>
-
-        <Switch>
-          <Redirect exact from="/Dashboard" to="/Dashboard/Inventory" />
-          <Route path="/Dashboard/Inventory" exact component={InventoryPage} />
-          <Route path="/Dashboard/Map" exact component={StoreMap} />
-        </Switch>
       </div>
-    );
-  }
+
+      <Switch>
+        <Redirect exact from="/Dashboard" to="/Dashboard/Inventory" />
+        <Route path="/Dashboard/Inventory" exact component={InventoryPage} />
+        <Route path="/Dashboard/Map" exact component={StoreMap} />
+      </Switch>
+    </div>
+  );
 }
 
 function MenuWithDropdown({ title }) {
