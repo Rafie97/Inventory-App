@@ -57,8 +57,11 @@ class CustomCard extends Component {
 
     if (tempPrice !== this.state.item.price && tempPrice !== "") {
       const item = this.state.item;
+      console.log("ITEM! ", item);
       const now = (Date.now() - this.diffRef).toString();
+      console.log("price", item.priceHistory);
       item.priceHistory[now] = this.state.item.price;
+
       item.price = tempPrice;
 
       await this.setState({ item: item });
@@ -127,7 +130,11 @@ class CustomCard extends Component {
       >
         <Card.Body>
           <Card.Header>
-            <Image src={this.state.item.imageLink} rounded={true} />
+            <Image
+              style={{ maxHeight: 100, maxWidth: 100 }}
+              src={this.state.item.imageLink}
+              rounded={true}
+            />
           </Card.Header>
           <Card.Title>
             {this.state.edit ? <></> : <h>{this.state.item.name}</h>}
@@ -141,17 +148,29 @@ class CustomCard extends Component {
                 <Form.Control
                   id="tempName"
                   type="text"
+                  onFocus={(event) => {
+                    event.target.select();
+                  }}
                   value={this.state.tempName}
                   onChange={this.onFormChange}
                 />
-                <Form.Control
-                  id="tempPrice"
-                  type="text"
-                  value={this.state.tempPrice}
-                  onChange={this.onFormChange}
-                />
+                <div style={{ flexDirection: "row" }}>
+                  <p style={{ width: 10, display: "inline-block" }}>$</p>
+                  <Form.Control
+                    id="tempPrice"
+                    type="text"
+                    placeholder="0.00"
+                    style={{ width: 100, margin: 20, display: "inline-block" }}
+                    value={this.state.tempPrice}
+                    onChange={this.onFormChange}
+                  />
+                </div>
+
                 <div style={{ height: "1rem" }}></div>
-                <label className="form-control-file">
+                <label
+                  className="form-control-file"
+                  style={{ marginBottom: 10 }}
+                >
                   Upload a photo of this item
                 </label>
                 <Form.File

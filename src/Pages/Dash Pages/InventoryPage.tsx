@@ -45,7 +45,7 @@ export default function InventoryPage() {
       //Update in state
       const index = items.findIndex((e) => e.docID === newItem.docID);
       items[index] = newItem;
-
+      console.log("EDITED ITEM: ", newItem);
       await setCards(items);
       await setBackSearches(items);
       //Update in firebase
@@ -88,6 +88,7 @@ export default function InventoryPage() {
   const emptyDoc = {
     docID: "additem",
     name: "Add a new item",
+    priceHistory: [],
   };
 
   const emptyCard = new Item(emptyDoc);

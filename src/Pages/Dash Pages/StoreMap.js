@@ -64,6 +64,7 @@ export default function StoreMap() {
   }, []);
 
   function onSave() {
+    console.log("H: ", mapHeight, "W: ", mapWidth);
     const wallData = {
       wallCoordinates,
       aisles,
