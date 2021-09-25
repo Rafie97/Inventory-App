@@ -1,2 +1,2 @@
-## An inventory app
-# For admin side use of Scan-App
+# An inventory app
+## For admin side use of Scan-App
