@@ -39,7 +39,7 @@ export default function StoreMap() {
     .collection("stores")
     .doc("HEB")
     .collection("map-data")
-    .doc("walls");
+    .doc("map");
 
   useEffect(() => {
     drawRectLeft = blueprintWindow.current.getBoundingClientRect().left;

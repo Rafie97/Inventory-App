@@ -37,7 +37,7 @@ export default function AisleForm({
     .collection("stores")
     .doc("HEB")
     .collection("map-data")
-    .doc("walls");
+    .doc("map");
 
   function openModal() {
     setIsOpen(true);
